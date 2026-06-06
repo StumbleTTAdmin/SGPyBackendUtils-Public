@@ -1,0 +1,67 @@
+# SGPyBackendUtils-Public
+
+A lightweight Python backend utility for interacting with the Stumble Guys API via `Backend.py`.
+
+## What this repository provides
+
+- `Backend.py`: a single-file backend wrapper for Stumble Guys API calls.
+- `CryptoUtils.py`: required cryptographic helpers used by `Backend.py`.
+- `requirements.txt`: dependency list for running the project.
+- `DOCS.md`: detailed documentation for `Backend.py`.
+
+## Key Features
+
+- account login and session management
+- API wrappers for GET, POST, PUT, DELETE calls
+- proxy support for requests
+- scoreboard, event, ranked season, and battle pass utilities
+- automated crown farming support with webhook reporting
+- cosmetic updates, platform linking/unlinking, and mission/battle pass claiming
+
+## Requirements
+
+- Python 3.11+ (recommended)
+- install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Setup
+
+1. Copy `example.env` to `.env`.
+2. Set `SG_VERSION` in `.env`.
+3. Ensure `CryptoUtils.py` is present in the same folder.
+
+## Basic Usage
+
+```python
+from Backend import Backend
+
+# Optional: enable debug logs
+Backend.LogsDebug = True
+
+# Log in with a StumbleId, or leave blank for automatic Android Device Id
+Backend.Version = '0.99'
+response = Backend.login(StumbleId='YOUR_STUMBLE_ID')
+print(response)
+
+
+# Perform a simple GET call on an authenticated endpoint
+sharedconfig = Backend.Get('/user/config')
+print(sharedconfig)
+
+## Notes
+
+- `Backend.py` reads `.env` at import time using `dotenv`.
+- `SG_VERSION` must be defined for login payload generation.
+- `Backend` is implemented as a class with mostly `@classmethod` methods.
+- `DOCS.md` contains a method reference and examples specific to `Backend.py`.
+
+## Project Files
+
+- `Backend.py` - main backend wrapper and API client.
+- `CryptoUtils.py` - required cryptographic helpers.
+- `DOCS.md` - detailed documentation for `Backend.py` usage.
+- `requirements.txt` - Python dependencies.
+- `example.env` - example environment variables.
