@@ -641,7 +641,15 @@ class Backend :
         try :
             body =json .dumps ({"UserName":username })
             response =cls .Post ("/friends/search",body )
-            if not response or "message"not in response :return {"message":"Error"}
+            if os.environ.get("StumbleLabs_Api_Key") is not None:
+                labs_response = requests.post(
+                    "https://api.stumblelabs.net/api/live/users/search",
+                    json={"username": username},
+                    headers={"x-api-key": os.environ.get("StumbleLabs_Api_Key")},
+                )
+                Console.log("Backend", f"StumbleLabs Search Response: {labs_response.json()}\n")
+            if not response or "message" not in response:
+                return {"message": "Error"}
             return response 
         except :
             return {"message":"Error"}
