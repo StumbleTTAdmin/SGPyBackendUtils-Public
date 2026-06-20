@@ -3,10 +3,9 @@
 `Backend.py` implements a Python wrapper for Stumble Guys API interactions. The module is designed around a single `Backend` class with class-level state and helper methods.
 
 ## Setup Requirements
-
-- pip install -r requirements.txt
-- `CryptoUtils.py` in the same folder
-- `.env` file containing `SG_VERSION`
+- git clone https://github.com/StumbleTTAdmin/SGPyBackendUtils-Public
+- cd SGPyBackendUtils-Public
+- pip install -e .
 
 ## Core Classes
 
@@ -19,7 +18,8 @@ A simple logger with static methods:
 
 ### `Backend`
 A full API client class with shared state and request helpers.
-
+# Import
+Import The Backend Class by using `from StumbleUtils import Backend`
 ## Important configuration values
 
 - `Backend.baseUrl` - API base URL, defaults to `https://api.stumbleguys.com`

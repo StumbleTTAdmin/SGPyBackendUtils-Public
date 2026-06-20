@@ -4,8 +4,12 @@ import time
 import random 
 import requests 
 from datetime import datetime 
-from CryptoUtils import CryptoUtils 
 from dotenv import load_dotenv 
+
+try:
+    from .CryptoUtils import CryptoUtils
+except ImportError:
+    from CryptoUtils import CryptoUtils
 
 load_dotenv ()
 class Console :
@@ -1021,132 +1025,7 @@ class Backend :
                        cls .Post (f"/missions/objective/{missionObjectiveId }/{milestone ['milestoneId']}/rewards/claim/v2","{}")
         return True 
 
-    @classmethod 
-    def FarmCrowns (cls ,StumbleId ,WebHook ,Winrate =100 ,Flags =None ):
-        if Flags is None :Flags ={}
-
-        Round =3 if random .random ()<(Winrate /100 )else 2 
-
-        if Flags .get ("CustomDeviceId"):
-             cls .login (StumbleId ,Flags ["CustomDeviceId"])
-        else :
-             cls .login (StumbleId )
-
-        if not cls .User .get ('stumbleId'):return False 
-
-        BeforeFarm ={
-        "Crowns":cls .User .get ('crowns',0 ),
-        "Trophys":cls .User .get ('skillRating',0 ),
-        "XP":cls .User .get ('experience',0 ),
-        "Gems":cls .getBalanceAmount ("gems"),
-        "Tokens":cls .getBalanceAmount ("dust"),
-        "AbilityTokens":cls .getBalanceAmount ("aec"),
-        }
-
-        if Flags .get ("EquipRandomSkin")and cls .User .get ("skins"):
-             def getRandomSkin ():
-
-                  if len (cls .User ["skins"])<=1 :return 0 
-                  while True :
-                       idx =random .randint (0 ,len (cls .User ["skins"])-1 )
-                       if cls .User ["skins"][idx ]!=cls .EquippedCosmetics .get ("skin"):
-                            return idx 
-
-             RandomSkinIdx =getRandomSkin ()
-             cls .updatecosmetics (cls .User ["skins"][RandomSkinIdx ],None ,None ,None ,None ,None ,None ,None )
-
-        if Flags .get ("PurchaseBattlePass"):
-
-             if not cls .User .get ('battlePass',{}).get ('hasPurchased'):
-                  if cls .getBalanceAmount ("gems")>=1200 :
-                       cls .purchasebattlepass ()
-
-        if Flags .get ("CompleteBattlePass"):cls .completebattlepass ()
-        if Flags .get ("CompleteMissions"):cls .completemissions ()
-
-        sid =cls .User .get ('stumbleId')
-        last_finish =cls .Timestamps ["LastFinishRound"].get (sid )
-        if last_finish :
-             elapsed =(time .time ()*1000 )-last_finish 
-             wait =max (20000 -elapsed ,0 )
-             if wait >0 :cls .wait (wait )
-
-        cls .finishRound (Round )
-
-        if Flags .get ("RoundFinishV4"):
-             last_finish_v4 =cls .Timestamps ["LastFinishRoundV4"].get (sid )
-             if last_finish_v4 :
-                  elapsed =(time .time ()*1000 )-last_finish_v4 
-                  wait =max (21000 -elapsed ,0 )
-                  if wait >0 :cls .wait (wait )
-             cls .FinishRoundV4 (Round ,Flags .get ("RoundFinishV4Events",True ))
-
-        current_xp =cls .User .get ('experience',0 )
-        lastClaimedLevel =cls .User .get ('xpRoad',{}).get ('lastClaimedLevel')
-        if lastClaimedLevel is None :lastClaimedLevel =cls .GetLevel (current_xp )
-
-        RequestData ={
-        "Profile":{
-        "Username":cls .User .get ('username'),
-        "Country":cls .User .get ('country'),
-        "Crowns":CryptoUtils .formatNumber (cls .User .get ('crowns')),
-        "Trophys":CryptoUtils .formatNumber (cls .User .get ('skillRating')),
-        },
-        "XpRoad":{
-        "XP":CryptoUtils .formatNumber (current_xp ),
-        "Level":CryptoUtils .formatNumber (lastClaimedLevel ),
-        },
-        "Balances":{
-        "Gems":CryptoUtils .formatNumber (cls .getBalanceAmount ("gems")),
-        "Tokens":CryptoUtils .formatNumber (cls .getBalanceAmount ("dust")),
-        "AbilityTokens":CryptoUtils .formatNumber (cls .getBalanceAmount ("aec")),
-        },
-        "Extra":{
-        "WebHook":WebHook ,
-        "DateTimestamp":datetime .now ().isoformat (),
-        "SkinID":(cls .EquippedCosmetics .get ("skin")or "skin1").lower (),
-        "GameVersion":cls .User .get ("version"),
-        "Auth":CryptoUtils .OmeyEncrypt (f"{cls .User .get ('stumbleId')}"),
-        },
-        "Rewards":{
-        "Crowns":CryptoUtils .formatNumber (cls .User .get ('crowns')-BeforeFarm ['Crowns']),
-        "Trophys":CryptoUtils .formatNumber (cls .User .get ('skillRating')-BeforeFarm ['Trophys']),
-        "XP":CryptoUtils .formatNumber (cls .User .get ('experience')-BeforeFarm ['XP']),
-        "Gems":CryptoUtils .formatNumber (cls .getBalanceAmount ("gems")-BeforeFarm ['Gems']),
-        "Tokens":CryptoUtils .formatNumber (cls .getBalanceAmount ("dust")-BeforeFarm ['Tokens']),
-        "AbilityTokens":CryptoUtils .formatNumber (cls .getBalanceAmount ("aec")-BeforeFarm ['AbilityTokens']),
-        "Total":(cls .User .get ('crowns')-BeforeFarm ['Crowns'])+
-        (cls .User .get ('skillRating')-BeforeFarm ['Trophys'])+
-        (cls .User .get ('experience')-BeforeFarm ['XP'])+
-        (cls .getBalanceAmount ("gems")-BeforeFarm ['Gems'])+
-        (cls .getBalanceAmount ("aec")-BeforeFarm ['AbilityTokens']),
-        }
-        }
-
-        if not Flags .get ("WithoutWebHook"):
-             cls .SendToDiscord (RequestData )
-
-    @classmethod 
-    def updatecosmetics (cls ,SkinID ,Color ,Animation ,Footstep ,Emote1 ,Emote2 ,Emote3 ,Emote4 ,ActionEmote1 ="",ActionEmote2 ="",ActionEmote3 ="",ActionEmote4 =""):
-        ec =cls .EquippedCosmetics 
-        body =json .dumps ({
-        "skin":SkinID or ec .get ("skin")or "SKIN1",
-        "color":("COLOR"+str (Color ))if Color else (ec .get ("color")or "COLOR1"),
-        "animation":Animation or ec .get ("animation")or "animation1",
-        "footsteps":Footstep or ec .get ("footsteps")or "footsteps_smoke",
-        "emote1":Emote1 or ec .get ("emote1")or "emote_cry",
-        "emote2":Emote2 or ec .get ("emote2")or "emote_hi",
-        "emote3":Emote3 or ec .get ("emote3")or "emote_gg",
-        "emote4":Emote4 or ec .get ("emote4")or "emote_haha",
-        "actionEmote1":ActionEmote1 or ec .get ("actionEmote1"),
-        "actionEmote2":ActionEmote2 or ec .get ("actionEmote2"),
-        "actionEmote3":ActionEmote3 or ec .get ("actionEmote3"),
-        "actionEmote4":ActionEmote4 or ec .get ("actionEmote4"),
-        })
-        response =cls .Put ("/user-equipped-cosmetics/update",body )
-        if response .get ("message")!="Error":
-             Console .log ("Backend","Cosmetics updated successfully\n")
-        return response 
+    
 
     @classmethod 
     def updateinfos (cls ):
