@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: StumbleUtils
+Version: 2.0.0
+Summary: Backend utilities for interacting with the Stumble Guys API.
+Author: SGPyBackendUtils-Public contributors
+Keywords: stumble-guys,backend,api,python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31
+Requires-Dist: python-dotenv>=1.0
+Requires-Dist: PyJWT>=2.7
+Requires-Dist: pycryptodome>=3.20
+Requires-Dist: DateTime>=4.9
+Requires-Dist: pytz>=2024.1
+Provides-Extra: dev
+Requires-Dist: build>=1.2; extra == "dev"
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
+
+# StumbleUtils
+
+A lightweight Python package for interacting with the Stumble Guys backend API.
+
+## Included Features
+
+- Create or log in to Stumble Guys accounts
+- Use helper methods such as `Backend.search("Player")` to search usernames
+- Send custom `GET`, `POST`, `PUT`, and `DELETE` requests to endpoints that are not directly wrapped by the utility
+
+## Example Login Script
+
+```python
+from StumbleUtils import Backend
+
+Backend.switchServer("live")
+login = Backend.login("")
+print(login)
+```
+
+## Example Usage
+
+```python
+from StumbleUtils import Backend
+
+# Search for a player by username
+result = Backend.search("Player")
+print(result)
+```
+
+## Installation
+
+```bash
+pip install -e .
+```
