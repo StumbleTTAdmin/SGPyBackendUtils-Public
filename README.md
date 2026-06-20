@@ -31,5 +31,5 @@ print(result)
 ## Installation
 
 ```bash
-pip install -e .
+pip install StumbleUtils
 ```
