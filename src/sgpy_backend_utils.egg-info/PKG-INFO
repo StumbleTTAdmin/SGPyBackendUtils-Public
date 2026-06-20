@@ -13,6 +13,7 @@ Classifier: Programming Language :: Python :: 3.11
 Classifier: Programming Language :: Python :: 3.12
 Classifier: Topic :: Software Development :: Libraries
 Requires-Python: >=3.11
+Description-Content-Type: text/markdown
 Requires-Dist: requests>=2.31
 Requires-Dist: python-dotenv>=1.0
 Requires-Dist: PyJWT>=2.7
@@ -24,70 +25,38 @@ Requires-Dist: build>=1.2; extra == "dev"
 Requires-Dist: pytest>=8.0; extra == "dev"
 Requires-Dist: ruff>=0.6; extra == "dev"
 
-# SGPyBackendUtils-Public
+# StumbleUtils
 
-A lightweight Python backend utility for interacting with the Stumble Guys API via `Backend.py`.
+A lightweight Python package for interacting with the Stumble Guys backend API.
 
-## What this repository provides
+## Included Features
 
-- `Backend.py`: a single-file backend wrapper for Stumble Guys API calls.
-- `CryptoUtils.py`: required cryptographic helpers used by `Backend.py`.
-- `requirements.txt`: dependency list for running the project.
-- `DOCS.md`: detailed documentation for `Backend.py`.
+- Create or log in to Stumble Guys accounts
+- Use helper methods such as `Backend.search("Player")` to search usernames
+- Send custom `GET`, `POST`, `PUT`, and `DELETE` requests to endpoints that are not directly wrapped by the utility
 
-## Key Features
-
-- account login and session management
-- API wrappers for GET, POST, PUT, DELETE calls
-- proxy support for requests
-- scoreboard, event, ranked season, and battle pass utilities
-- automated crown farming support with webhook reporting
-- cosmetic updates, platform linking/unlinking, and mission/battle pass claiming
-
-## Requirements
-
-- Python 3.11+ (recommended)
-- install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Setup
-
-1. Copy `example.env` to `.env`.
-2. Set `SG_VERSION` in `.env`.
-3. Ensure `CryptoUtils.py` is present in the same folder.
-
-## Basic Usage
+## Example Login Script
 
 ```python
-from Backend import Backend
+from StumbleUtils import Backend
 
-# Optional: enable debug logs
-Backend.LogsDebug = True
+Backend.switchServer("live")
+login = Backend.login("")
+print(login)
+```
 
-# Log in with a StumbleId, or leave blank for automatic Android Device Id
-Backend.Version = '0.99'
-response = Backend.login(StumbleId='YOUR_STUMBLE_ID')
-print(response)
+## Example Usage
 
+```python
+from StumbleUtils import Backend
 
-# Perform a simple GET call on an authenticated endpoint
-sharedconfig = Backend.Get('/user/config')
-print(sharedconfig)
+# Search for a player by username
+result = Backend.search("Player")
+print(result)
+```
 
-## Notes
+## Installation
 
-- `Backend.py` reads `.env` at import time using `dotenv`.
-- `SG_VERSION` must be defined for login payload generation.
-- `Backend` is implemented as a class with mostly `@classmethod` methods.
-- `DOCS.md` contains a method reference and examples specific to `Backend.py`.
-
-## Project Files
-
-- `Backend.py` - main backend wrapper and API client.
-- `CryptoUtils.py` - required cryptographic helpers.
-- `DOCS.md` - detailed documentation for `Backend.py` usage.
-- `requirements.txt` - Python dependencies.
-- `example.env` - example environment variables.
+```bash
+pip install -e .
+```
