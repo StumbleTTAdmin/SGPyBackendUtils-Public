@@ -28,7 +28,7 @@ Import The Backend Class by using `from StumbleUtils import Backend`
 
 ## Authentication & Request Helpers
 
-- `Backend.login(StumbleId='', DeviceId='', DontLogs=False, ScopelyId='', SteamTicket='')`
+- `Backend.login(StumbleId='', DeviceId='', version='0.99', DontLogs=False, ScopelyId='', SteamTicket='')`
 - `Backend.getAuthHeader(url, body='')`
 - `Backend.Get(Patch)`
 - `Backend.Post(Patch, Body='')`
@@ -98,23 +98,12 @@ Import The Backend Class by using `from StumbleUtils import Backend`
 ## Example usage
 
 ```python
-from Backend import Backend
+from StumbleUtils import Backend
 
 Backend.LogsDebug = True
-Backend.Version = '0.99'
-Backend.login(StumbleId='your_id_here')
-Backend.updateinfos()
-
-# Farm crowns and post to a webhook
-Backend.FarmCrowns(
-    StumbleId='your_id_here',
-    WebHook='https://discord.com/api/webhooks/your-webhook',
-    Winrate=100,
-    Flags={
-        'CompleteMissions': True,
-        'CompleteBattlePass': True,
-    }
-)
+Backend.login(version=0.99)
+# Search for a user
+Backend.search("ItsOmeyNS")
 ```
 
 ## Notes
@@ -123,8 +112,3 @@ Backend.FarmCrowns(
 - `Backend.set_proxy()` is available, but not all methods currently pass proxies through to every request.
 - `Backend.py` is best used as a helper library inside another script rather than run as a standalone module.
 
-## Troubleshooting
-
-- Ensure `SG_VERSION` is configured in `.env`.
-- Install dependencies from `requirements.txt`.
-- Confirm `CryptoUtils.py` is present and importable from the same folder.

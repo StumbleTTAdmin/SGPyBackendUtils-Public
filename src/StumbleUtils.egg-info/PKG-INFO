@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: StumbleUtils
-Version: 2.0.0
+Version: 2.1.0
 Summary: Backend utilities for interacting with the Stumble Guys API.
 Author: SGPyBackendUtils-Public contributors
 Keywords: stumble-guys,backend,api,python
@@ -58,5 +58,5 @@ print(result)
 ## Installation
 
 ```bash
-pip install -e .
+pip install StumbleUtils
 ```

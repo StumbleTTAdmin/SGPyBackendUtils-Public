@@ -110,11 +110,11 @@ class Backend :
     RankedPlaySettings ={}
 
 
-    Version =os .getenv ("SG_VERSION")
 
     @classmethod 
     def Timestamp (cls ):
         return int (time .time ())
+    
 
     @classmethod 
     def getTimestamp (cls ):
@@ -569,7 +569,7 @@ class Backend :
              Console .error ("Backend",f"Shared Update Exception: {error }")
 
     @classmethod 
-    def login (cls ,StumbleId ="",DeviceId ="",DontLogs =False ,ScopelyId ="",SteamTicket =""):
+    def login (cls ,StumbleId ="",DeviceId ="", version="", DontLogs =False ,ScopelyId ="",SteamTicket =""):
         try :
             LoginTimestamp =cls .Timestamp ()
             AndroidId =CryptoUtils .GenAndroidId ()
@@ -585,11 +585,11 @@ class Backend :
             loginBody ={
             "AdvertisingId":None ,
             "AppleId":"",
-            "Version":cls .Version ,
+            "Version":version,
             "DeviceId":DeviceId ,
             "FacebookId":"",
             "GoogleId":"",
-            "Hash":CryptoUtils .CreateLoginHash (DeviceId ,cls .Version ,LoginTimestamp ,StumbleId ,SteamTicket ,ScopelyId ),
+            "Hash":CryptoUtils .CreateLoginHash (DeviceId ,version ,LoginTimestamp ,StumbleId ,SteamTicket ,ScopelyId ),
             "Id":0 ,
             "ScopelyId":ScopelyId ,
             "StumbleId":StumbleId ,
